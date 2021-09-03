@@ -1,0 +1,9 @@
+{
+	"name": "NCS-LEAP-DataMovement",
+	"location": "southeastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "05d84c97-5498-456f-a199-23b7a6d98f37",
+		"tenantId": "95ebdbab-f8b8-48c4-b548-5bdbc0d1ad70"
+	}
+}
