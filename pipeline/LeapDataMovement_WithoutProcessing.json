@@ -74,7 +74,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "CopyLeap_Staging-To-DB_2",
+						"activity": "CopyLeap_Staging-To-DB_3",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1062,6 +1062,51 @@
 				"linkedServiceName": {
 					"referenceName": "PnGDataFoundation",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CopyLeap_Staging-To-DB_3",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CopyLeap_Staging-To-DB_2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CopyLeap_Staging-To-DB3",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "CopyFiletoDBPart3_Error",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CopyLeap_Staging-To-DB_3",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Send Notification",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"EmailTo": "avinash@astix.in,Alok@astix.in,Ashwani@Astix.in",
+						"Subject": "TAS Datafactory Error",
+						"ErrorMessage": "Copy FiletoDB Part3 Failed, log on to portal for more details"
+					}
 				}
 			}
 		],
