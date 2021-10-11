@@ -262,7 +262,7 @@
 								},
 								"waitOnCompletion": true,
 								"parameters": {
-									"EmailTo": "avinash@astixsolutions.com,alok@astixsolutions.com,ashwani@astixsolutions.com",
+									"EmailTo": "avinash@astix.in,alok@astix.in,ashwani@astix.in",
 									"Subject": "TAS Datafactory Error",
 									"ErrorMessage": "SpLoadLeapTASIntegration Failed, log on to portal for more details"
 								}
