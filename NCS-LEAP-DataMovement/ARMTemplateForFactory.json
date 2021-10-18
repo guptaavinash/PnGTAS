@@ -47811,103 +47811,11 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "LookupAllFilesCome",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[SpCheckLeapDataLoaded]",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "TASDBConnection",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "WhenAllFilesCome",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "LookupAllFilesCome",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@bool(activity('LookupAllFilesCome').output.firstRow.flgDataloaded)",
-								"type": "Expression"
-							},
-							"ifTrueActivities": [
-								{
-									"name": "LoadLeapTasIntegration",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[spLoadLeapTasIntegration]"
-									},
-									"linkedServiceName": {
-										"referenceName": "TASDatabase",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "SpLoadLeapTASIntegration_Error",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "LoadLeapTasIntegration",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "Send Notification",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"EmailTo": "avinash@astix.in,alok@astix.in,ashwani@astix.in",
-											"Subject": "TAS Datafactory Error",
-											"ErrorMessage": "SpLoadLeapTASIntegration Failed, log on to portal for more details"
-										}
-									}
-								}
-							]
-						}
-					},
-					{
 						"name": "PopulateDSETeleCallingStores",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
-								"activity": "WhenAllFilesCome",
+								"activity": "LoadLeapTasIntegration",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -48086,12 +47994,6 @@
 						"dependsOn": [
 							{
 								"activity": "PopulateDSETeleCallingStores",
-								"dependencyConditions": [
-									"Failed"
-								]
-							},
-							{
-								"activity": "WhenAllFilesCome",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -48517,6 +48419,51 @@
 							"referenceName": "PnGDataFoundation",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "LoadLeapTasIntegration",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[spLoadLeapTasIntegration]"
+						},
+						"linkedServiceName": {
+							"referenceName": "TASDatabase",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "SpLoadLeapTASIntegration_Error",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "LoadLeapTasIntegration",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Send Notification",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"EmailTo": "avinash@astix.in,alok@astix.in,ashwani@astix.in",
+								"Subject": "TAS Datafactory Error",
+								"ErrorMessage": "SpLoadLeapTASIntegration Failed, log on to portal for more details"
+							}
+						}
 					}
 				],
 				"policy": {
@@ -48538,8 +48485,8 @@
 				"lastPublishTime": "2021-07-01T05:49:19Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/TASDBConnection')]",
 				"[concat(variables('factoryId'), '/linkedServices/TASDatabase')]",
+				"[concat(variables('factoryId'), '/datasets/TASDBConnection')]",
 				"[concat(variables('factoryId'), '/pipelines/Send Notification')]",
 				"[concat(variables('factoryId'), '/datasets/DS_TAS_ProductTransfer')]",
 				"[concat(variables('factoryId'), '/datasets/DS_DF_tmpProductTransferToDF')]",
