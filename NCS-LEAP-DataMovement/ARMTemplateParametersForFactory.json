@@ -29,6 +29,9 @@
 		"TASDatabase_Test_connectionString": {
 			"value": ""
 		},
+		"TASDatabase_DevOctRelease_connectionString": {
+			"value": ""
+		},
 		"Leap_AmazonS3_properties_typeProperties_accessKeyId": {
 			"value": "AKIAW6LTDL6KHDJLBDO2"
 		},
