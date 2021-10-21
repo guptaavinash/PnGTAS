@@ -16,14 +16,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "CopyLeap_Staging-To-DB_WithDPSR",
+						"referenceName": "CopyLeap_Staging-To-DB_CCROnly",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "CopyLeap_Staging-To-DB_2",
+				"name": "CopyLeapStaging-To-ADLS",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -36,27 +36,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "CopyLeap_Staging-To-DB_2",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
-			},
-			{
-				"name": "CopyLeapStaging-To-ADLS",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "CopyLeap_Staging-To-DB_2",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "CopyLeapStaging-To-ADLS",
+						"referenceName": "CopyLeapStaging_CCR-To-ADLS",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -173,10 +153,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[spDataLoadRawLEAPTAS_CCCR]"
+					"storedProcedureName": "spDataLoadRawLEAPTAS_CCCR"
 				},
 				"linkedServiceName": {
-					"referenceName": "TASDatabase",
+					"referenceName": "TASDatabase_DevOctRelease",
 					"type": "LinkedServiceReference"
 				}
 			},
