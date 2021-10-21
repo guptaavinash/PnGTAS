@@ -68,7 +68,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[SpFileEntry]",
+								"storedProcedureName": "SpFileEntry",
 								"storedProcedureParameters": {
 									"Filename": {
 										"value": {
@@ -91,7 +91,7 @@
 								}
 							},
 							"linkedServiceName": {
-								"referenceName": "TASDatabase",
+								"referenceName": "TASDatabase_DevOctRelease",
 								"type": "LinkedServiceReference"
 							}
 						},
@@ -158,6 +158,7 @@
 											},
 											"sink": {
 												"type": "AzureSqlSink",
+												"disableMetricsCollection": false,
 												"writeBehavior": "insert"
 											},
 											"enableStaging": false,
@@ -446,7 +447,7 @@
 										],
 										"outputs": [
 											{
-												"referenceName": "CCCR_table",
+												"referenceName": "CCCR_table_Dev",
 												"type": "DatasetReference"
 											}
 										]
@@ -517,6 +518,7 @@
 											},
 											"sink": {
 												"type": "AzureSqlSink",
+												"disableMetricsCollection": false,
 												"writeBehavior": "insert"
 											},
 											"enableStaging": false,
@@ -805,7 +807,7 @@
 										],
 										"outputs": [
 											{
-												"referenceName": "CCCR_table",
+												"referenceName": "CCCR_table_Dev",
 												"type": "DatasetReference"
 											}
 										]
@@ -876,6 +878,7 @@
 											},
 											"sink": {
 												"type": "AzureSqlSink",
+												"disableMetricsCollection": false,
 												"writeBehavior": "insert"
 											},
 											"enableStaging": false,
@@ -1164,7 +1167,7 @@
 										],
 										"outputs": [
 											{
-												"referenceName": "CCCR_table",
+												"referenceName": "CCCR_table_Dev",
 												"type": "DatasetReference"
 											}
 										]
