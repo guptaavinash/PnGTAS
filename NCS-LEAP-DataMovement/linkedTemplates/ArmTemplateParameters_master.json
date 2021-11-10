@@ -26,10 +26,10 @@
 		"TASDatabase_connectionString": {
 			"value": ""
 		},
-		"TASDatabase_Test_connectionString": {
+		"TASDatabase_DevOctRelease_connectionString": {
 			"value": ""
 		},
-		"TASDatabase_DevOctRelease_connectionString": {
+		"TASDatabase_Test_connectionString": {
 			"value": ""
 		},
 		"Leap_AmazonS3_properties_typeProperties_accessKeyId": {

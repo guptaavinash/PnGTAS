@@ -35,13 +35,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'TASDatabase'"
 		},
-		"TASDatabase_Test_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'TASDatabase_Test'"
-		},
 		"TASDatabase_DevOctRelease_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'TASDatabase_DevOctRelease'"
+		},
+		"TASDatabase_Test_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TASDatabase_Test'"
 		},
 		"Leap_AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
@@ -127,11 +127,11 @@
 					"TASDatabase_connectionString": {
 						"value": "[parameters('TASDatabase_connectionString')]"
 					},
-					"TASDatabase_Test_connectionString": {
-						"value": "[parameters('TASDatabase_Test_connectionString')]"
-					},
 					"TASDatabase_DevOctRelease_connectionString": {
 						"value": "[parameters('TASDatabase_DevOctRelease_connectionString')]"
+					},
+					"TASDatabase_Test_connectionString": {
+						"value": "[parameters('TASDatabase_Test_connectionString')]"
 					},
 					"Leap_AmazonS3_properties_typeProperties_accessKeyId": {
 						"value": "[parameters('Leap_AmazonS3_properties_typeProperties_accessKeyId')]"
