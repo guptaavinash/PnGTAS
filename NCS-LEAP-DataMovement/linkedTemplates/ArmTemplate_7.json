@@ -3995,42 +3995,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ScaleDBAt5_00')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Scaledb",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2021-06-12T08:10:00",
-						"timeZone": "India Standard Time",
-						"schedule": {
-							"minutes": [
-								0
-							],
-							"hours": [
-								5
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ONetimeProcessrun')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -4060,6 +4024,42 @@
 							],
 							"hours": [
 								2
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ScaleDBAt5_00')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Scaledb",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2021-06-12T08:10:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								0
+							],
+							"hours": [
+								5
 							]
 						}
 					}
@@ -7461,59 +7461,31 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MoveADLS-To-dfdatafoundation_Level3')]",
+			"name": "[concat(parameters('factoryName'), '/LeapDataMovement_onlytransfer')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "Move files from one folder to another folder",
 				"activities": [
 					{
-						"name": "GetFoldername",
-						"description": "Get the list of file",
-						"type": "GetMetadata",
+						"name": "CopyS3-To-Staging_Cloud1",
+						"type": "ExecutePipeline",
 						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataset": {
-								"referenceName": "ADLSBinaryDataSource_Folder",
-								"type": "DatasetReference",
-								"parameters": {
-									"Container": {
-										"value": "@pipeline().parameters.SourceStore_Container",
-										"type": "Expression"
-									},
-									"Directory": {
-										"value": "@pipeline().parameters.SourceStore_Directory",
-										"type": "Expression"
-									}
-								}
+							"pipeline": {
+								"referenceName": "CopyS3-To-Staging_Cloud1",
+								"type": "PipelineReference"
 							},
-							"fieldList": [
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true
-							},
-							"formatSettings": {
-								"type": "BinaryReadSettings"
-							}
+							"waitOnCompletion": true,
+							"parameters": {}
 						}
 					},
 					{
-						"name": "ForEachFoldername",
-						"description": "Iterate each folder and find the folder or file inside it.",
-						"type": "ForEach",
+						"name": "CopyS3-To-Staging_Cloud2",
+						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "FilterFolder",
+								"activity": "CopyS3-To-Staging_Cloud1",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -7521,54 +7493,20 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"items": {
-								"value": "@activity('FilterFolder').output.value",
-								"type": "Expression"
+							"pipeline": {
+								"referenceName": "CopyS3-To-Staging_Cloud2",
+								"type": "PipelineReference"
 							},
-							"isSequential": false,
-							"batchCount": 20,
-							"activities": [
-								{
-									"name": "inner folder loop",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "MoveADLS-To-dfdatafoundation_Level4",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"SourceStore_Container": {
-												"value": "@pipeline().parameters.SourceStore_Container",
-												"type": "Expression"
-											},
-											"SourceStore_Directory": {
-												"value": "@concat(pipeline().parameters.SourceStore_Directory, item().name ,'/')\n\n",
-												"type": "Expression"
-											},
-											"DestinationStore_Container": {
-												"value": "@pipeline().parameters.DestinationStore_Container",
-												"type": "Expression"
-											},
-											"DestinationStore_Directory": {
-												"value": "@pipeline().parameters.DestinationStore_Directory",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
+							"waitOnCompletion": true,
+							"parameters": {}
 						}
 					},
 					{
-						"name": "FilterFolder",
-						"description": "Only files will be selected, the source-folders will not be selected.",
-						"type": "Filter",
+						"name": "CopyS3-To-Staging_Cloud3",
+						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "GetFoldername",
+								"activity": "CopyS3-To-Staging_Cloud2",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -7576,14 +7514,12 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"items": {
-								"value": "@activity('GetFoldername').output.childItems",
-								"type": "Expression"
+							"pipeline": {
+								"referenceName": "CopyS3-To-Staging_Cloud3",
+								"type": "PipelineReference"
 							},
-							"condition": {
-								"value": "@equals(item().type, 'Folder')",
-								"type": "Expression"
-							}
+							"waitOnCompletion": true,
+							"parameters": {}
 						}
 					}
 				],
@@ -7592,24 +7528,18 @@
 					"cancelAfter": {}
 				},
 				"parameters": {
-					"SourceStore_Container": {
-						"type": "String"
+					"windowStart": {
+						"type": "string"
 					},
-					"SourceStore_Directory": {
-						"type": "String"
-					},
-					"DestinationStore_Container": {
-						"type": "String"
-					},
-					"DestinationStore_Directory": {
-						"type": "String"
+					"windowEnd": {
+						"type": "string"
 					}
 				},
 				"folder": {
-					"name": "Other Pipelines"
+					"name": "Leap Data Pipeline"
 				},
 				"annotations": [],
-				"lastPublishTime": "2021-02-17T07:39:01Z"
+				"lastPublishTime": "2021-07-01T05:49:19Z"
 			},
 			"dependsOn": []
 		}
