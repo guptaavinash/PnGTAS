@@ -50732,47 +50732,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CCCRDataProcessing')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "CCRDataMovement_Dev",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2021-11-11T10:32:00",
-						"timeZone": "India Standard Time",
-						"schedule": {
-							"minutes": [
-								15
-							],
-							"hours": [
-								14,
-								16,
-								18,
-								22
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CCRDataMovement_Dev')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/CCR_DataProcessingAt10')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -51214,6 +51173,47 @@
 				"[concat(variables('factoryId'), '/pipelines/CopyS3-To-Staging_Cloud3')]",
 				"[concat(variables('factoryId'), '/datasets/LeapStorageSourceDataset')]",
 				"[concat(variables('factoryId'), '/linkedServices/TASDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CCCRDataProcessing')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "CCRDataMovement_Live",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2021-11-29T17:47:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								15
+							],
+							"hours": [
+								14,
+								16,
+								18,
+								22
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CCRDataMovement_Live')]"
 			]
 		}
 	]
