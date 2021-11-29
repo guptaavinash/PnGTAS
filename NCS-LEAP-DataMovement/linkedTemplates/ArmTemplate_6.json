@@ -10408,7 +10408,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "SpFileEntry",
+										"storedProcedureName": "[[dbo].[SpFileEntry]",
 										"storedProcedureParameters": {
 											"Filename": {
 												"value": {
@@ -10431,7 +10431,7 @@
 										}
 									},
 									"linkedServiceName": {
-										"referenceName": "TASDatabase_DevOctRelease",
+										"referenceName": "TASDatabase",
 										"type": "LinkedServiceReference"
 									}
 								},
@@ -10788,7 +10788,7 @@
 												],
 												"outputs": [
 													{
-														"referenceName": "CCCR_table_Dev",
+														"referenceName": "CCCR_table",
 														"type": "DatasetReference",
 														"parameters": {}
 													}
@@ -11150,7 +11150,7 @@
 												],
 												"outputs": [
 													{
-														"referenceName": "CCCR_table_Dev",
+														"referenceName": "CCCR_table",
 														"type": "DatasetReference",
 														"parameters": {}
 													}
@@ -11512,7 +11512,7 @@
 												],
 												"outputs": [
 													{
-														"referenceName": "CCCR_table_Dev",
+														"referenceName": "CCCR_table",
 														"type": "DatasetReference",
 														"parameters": {}
 													}
