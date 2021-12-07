@@ -24319,7 +24319,10 @@
 																"value": "/2020/12/08/",
 																"type": "Expression"
 															},
-															"wildcardFileName": "DPSR_MOR_cloud01_*",
+															"wildcardFileName": {
+																"value": "@item().name",
+																"type": "Expression"
+															},
 															"enablePartitionDiscovery": false
 														},
 														"formatSettings": {
@@ -25028,7 +25031,10 @@
 																"value": "/2020/12/08/",
 																"type": "Expression"
 															},
-															"wildcardFileName": "DPSR_MOR_cloud02_*",
+															"wildcardFileName": {
+																"value": "@item().name",
+																"type": "Expression"
+															},
 															"enablePartitionDiscovery": false
 														},
 														"formatSettings": {
@@ -25737,7 +25743,10 @@
 																"value": "/2020/12/08/",
 																"type": "Expression"
 															},
-															"wildcardFileName": "DPSR_MOR_cloud03_*",
+															"wildcardFileName": {
+																"value": "@item().name",
+																"type": "Expression"
+															},
 															"enablePartitionDiscovery": false
 														},
 														"formatSettings": {
