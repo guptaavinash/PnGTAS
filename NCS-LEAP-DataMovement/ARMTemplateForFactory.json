@@ -12322,6 +12322,16 @@
 																	"name": "status",
 																	"type": "String"
 																}
+															},
+															{
+																"source": {
+																	"name": "distributor_product_short_desc",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distributor_product_short_desc",
+																	"type": "String"
+																}
 															}
 														]
 													}
@@ -12691,6 +12701,16 @@
 																	"name": "status",
 																	"type": "String"
 																}
+															},
+															{
+																"source": {
+																	"name": "distributor_product_short_desc",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distributor_product_short_desc",
+																	"type": "String"
+																}
 															}
 														]
 													}
@@ -13058,6 +13078,16 @@
 																},
 																"sink": {
 																	"name": "status",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "distributor_product_short_desc",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distributor_product_short_desc",
 																	"type": "String"
 																}
 															}
@@ -17197,6 +17227,46 @@
 																	"name": "LastModifiedDatetime",
 																	"type": "DateTime"
 																}
+															},
+															{
+																"source": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																}
 															}
 														]
 													}
@@ -17559,6 +17629,46 @@
 																	"name": "LastModifiedDatetime",
 																	"type": "DateTime"
 																}
+															},
+															{
+																"source": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																}
 															}
 														]
 													}
@@ -17920,6 +18030,46 @@
 																"sink": {
 																	"name": "LastModifiedDatetime",
 																	"type": "DateTime"
+																}
+															},
+															{
+																"source": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
 																}
 															}
 														]
@@ -18864,6 +19014,46 @@
 																	"name": "LastModifiedDatetime",
 																	"type": "DateTime"
 																}
+															},
+															{
+																"source": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																}
 															}
 														]
 													}
@@ -19225,6 +19415,46 @@
 																	"name": "LastModifiedDatetime",
 																	"type": "DateTime"
 																}
+															},
+															{
+																"source": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																}
 															}
 														]
 													}
@@ -19585,6 +19815,46 @@
 																"sink": {
 																	"name": "LastModifiedDatetime",
 																	"type": "DateTime"
+																}
+															},
+															{
+																"source": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distance_travelled",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p1m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_p3m_ach",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "visit_fb_ach",
+																	"type": "String"
 																}
 															}
 														]
@@ -22467,6 +22737,36 @@
 																	"name": "tax_rate",
 																	"type": "String"
 																}
+															},
+															{
+																"source": {
+																	"name": "vc_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "vc_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "vc_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "vc_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "incoverage",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "incoverage",
+																	"type": "String"
+																}
 															}
 														]
 													}
@@ -23218,6 +23518,36 @@
 																	"name": "tax_rate",
 																	"type": "String"
 																}
+															},
+															{
+																"source": {
+																	"name": "vc_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "vc_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "vc_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "vc_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "incoverage",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "incoverage",
+																	"type": "String"
+																}
 															}
 														]
 													}
@@ -23967,6 +24297,36 @@
 																},
 																"sink": {
 																	"name": "tax_rate",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "vc_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "vc_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "vc_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "vc_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "incoverage",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "incoverage",
 																	"type": "String"
 																}
 															}
