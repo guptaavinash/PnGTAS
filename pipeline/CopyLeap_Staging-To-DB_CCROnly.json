@@ -835,6 +835,46 @@
 															"name": "LastModifiedDatetime",
 															"type": "DateTime"
 														}
+													},
+													{
+														"source": {
+															"name": "distance_travelled",
+															"type": "String"
+														},
+														"sink": {
+															"name": "distance_travelled",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "visit_p1m_ach",
+															"type": "String"
+														},
+														"sink": {
+															"name": "visit_p1m_ach",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "visit_p3m_ach",
+															"type": "String"
+														},
+														"sink": {
+															"name": "visit_p3m_ach",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "visit_fb_ach",
+															"type": "String"
+														},
+														"sink": {
+															"name": "visit_fb_ach",
+															"type": "String"
+														}
 													}
 												]
 											}
