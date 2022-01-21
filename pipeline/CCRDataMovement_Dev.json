@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "CopyLeap_Staging-To-DB_CCROnly",
+						"referenceName": "CopyLeap_Staging-To-DB_CCROnly_Dev",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
