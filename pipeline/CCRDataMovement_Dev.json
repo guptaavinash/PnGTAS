@@ -23,26 +23,6 @@
 				}
 			},
 			{
-				"name": "CopyLeapStaging-To-ADLS",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "CopyLeap_Staging-To-DB",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "CopyLeapStaging_CCR-To-ADLS",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
-			},
-			{
 				"name": "CopyS3-To-Staging_Cloud1",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -107,7 +87,7 @@
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "CopyLeapStaging-To-ADLS",
+						"activity": "CopyLeap_Staging-To-DB",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -123,7 +103,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "LeapStorageSourceDataset",
+						"referenceName": "LeapStorageSourceDataset_Dev",
 						"type": "DatasetReference"
 					},
 					"enableLogging": false,
