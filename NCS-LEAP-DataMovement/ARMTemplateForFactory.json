@@ -43689,7 +43689,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Scale_V8",
+						"name": "Scale_V6",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [],
 						"policy": {
@@ -43701,7 +43701,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"storedProcedureName": "[[dbo].[Scale_GP_Gen5_8]"
+							"storedProcedureName": "[[dbo].[Scale_GP_Gen5_6]"
 						},
 						"linkedServiceName": {
 							"referenceName": "TASDatabase",
@@ -55845,7 +55845,7 @@
 						"timeZone": "India Standard Time",
 						"schedule": {
 							"minutes": [
-								0
+								10
 							],
 							"hours": [
 								5
