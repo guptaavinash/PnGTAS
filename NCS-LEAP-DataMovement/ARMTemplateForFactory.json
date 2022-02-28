@@ -30642,7 +30642,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"storedProcedureName": "[[dbo].[Scale_GP_Gen5_6]"
+							"storedProcedureName": "[[dbo].[Scale_GP_Gen5_8]"
 						},
 						"linkedServiceName": {
 							"referenceName": "TASDatabase",
@@ -55952,10 +55952,10 @@
 						"timeZone": "India Standard Time",
 						"schedule": {
 							"minutes": [
-								30
+								0
 							],
 							"hours": [
-								22
+								21
 							]
 						}
 					}
