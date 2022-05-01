@@ -44450,6 +44450,1105 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/LoadFile-ADLS-To-DB_TASK')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "LoadFile-ADLS-To-DB",
+				"activities": [
+					{
+						"name": "GetFileList",
+						"description": "Get the list of file",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ADLSDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"folder": {
+										"value": "/2022/04/29/",
+										"type": "Expression"
+									},
+									"directory": "leap"
+								}
+							},
+							"fieldList": [
+								"childItems",
+								"lastModified",
+								"itemName"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "FilterFiles",
+						"description": "Only files will be selected, the source-folders will not be selected.",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "GetFileList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetFileList').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@equals(item().type, 'File')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ForEachFile",
+						"description": "Iterate each file, and move them one by one.",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "FilterFiles",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('FilterFiles').output.value",
+								"type": "Expression"
+							},
+							"batchCount": 20,
+							"activities": [
+								{
+									"name": "TASK_Cloud1",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@bool(startswith(item().name,'TASK_cloud01_'))",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "TASK_Cloud01",
+												"description": "Copy a file from the source store to the destination store.",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "DelimitedTextSource",
+														"additionalColumns": [
+															{
+																"name": "Filename",
+																"value": {
+																	"value": "@item().name",
+																	"type": "Expression"
+																}
+															},
+															{
+																"name": "Lastmodifieddatetime",
+																"value": {
+																	"value": "@activity('GetFileList').output.lastModified",
+																	"type": "Expression"
+																}
+															}
+														],
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"wildcardFolderPath": {
+																"value": "/2022/04/29/",
+																"type": "Expression"
+															},
+															"wildcardFileName": {
+																"value": "@item().name",
+																"type": "Expression"
+															},
+															"enablePartitionDiscovery": false
+														},
+														"formatSettings": {
+															"type": "DelimitedTextReadSettings"
+														},
+														"recursive": false
+													},
+													"sink": {
+														"type": "AzureSqlSink"
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "distributor_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distributor_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "distributor_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distributor_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "branch_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "branch_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "branch_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "branch_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_created_date",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_created_date",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "created_user_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "created_user_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "created_user_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "created_user_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "assigned_to",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "assigned_to",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "retailer_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "retailer_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "retailer_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "retailer_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_title",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_title",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_description",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_description",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "due_date",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "due_date",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "over_due",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "over_due",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_remark",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_remark",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_status",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_status",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_task_date",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_task_date",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_task_id",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_task_id",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_seller_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_seller_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_seller_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_seller_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "Filename",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "Filename",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "Lastmodifieddatetime",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "LastModifiedDatetime",
+																	"type": "DateTime"
+																}
+															}
+														]
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "ADLSCSVDataSource_Folder",
+														"type": "DatasetReference",
+														"parameters": {
+															"Container": "leap",
+															"Directory": {
+																"value": "/2022/04/29/",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "TASK_table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											}
+										]
+									}
+								},
+								{
+									"name": "TASK_Cloud2",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "TASK_Cloud1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@bool(startswith(item().name,'TASK_cloud02_'))",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "TASK_Cloud02",
+												"description": "Copy a file from the source store to the destination store.",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "DelimitedTextSource",
+														"additionalColumns": [
+															{
+																"name": "Filename",
+																"value": {
+																	"value": "@item().name",
+																	"type": "Expression"
+																}
+															},
+															{
+																"name": "Lastmodifieddatetime",
+																"value": {
+																	"value": "@activity('GetFileList').output.lastModified",
+																	"type": "Expression"
+																}
+															}
+														],
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"wildcardFolderPath": {
+																"value": "/2022/04/29/",
+																"type": "Expression"
+															},
+															"wildcardFileName": {
+																"value": "@item().name",
+																"type": "Expression"
+															},
+															"enablePartitionDiscovery": false
+														},
+														"formatSettings": {
+															"type": "DelimitedTextReadSettings"
+														},
+														"recursive": false
+													},
+													"sink": {
+														"type": "AzureSqlSink"
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "distributor_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distributor_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "distributor_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distributor_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "branch_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "branch_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "branch_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "branch_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_created_date",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_created_date",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "created_user_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "created_user_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "created_user_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "created_user_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "assigned_to",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "assigned_to",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "retailer_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "retailer_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "retailer_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "retailer_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_title",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_title",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_description",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_description",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "due_date",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "due_date",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "over_due",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "over_due",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_remark",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_remark",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_status",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_status",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_task_date",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_task_date",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_task_id",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_task_id",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_seller_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_seller_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_seller_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_seller_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "Filename",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "Filename",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "Lastmodifieddatetime",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "LastModifiedDatetime",
+																	"type": "DateTime"
+																}
+															}
+														]
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "ADLSCSVDataSource_Folder",
+														"type": "DatasetReference",
+														"parameters": {
+															"Container": "leap",
+															"Directory": {
+																"value": "/2022/04/29/",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "TASK_table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											}
+										]
+									}
+								},
+								{
+									"name": "TASK_Cloud3",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "TASK_Cloud2",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@bool(startswith(item().name,'TASK_cloud03_'))",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "TASK_Cloud03",
+												"description": "Copy a file from the source store to the destination store.",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "DelimitedTextSource",
+														"additionalColumns": [
+															{
+																"name": "Filename",
+																"value": {
+																	"value": "@item().name",
+																	"type": "Expression"
+																}
+															},
+															{
+																"name": "Lastmodifieddatetime",
+																"value": {
+																	"value": "@activity('GetFileList').output.lastModified",
+																	"type": "Expression"
+																}
+															}
+														],
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"wildcardFolderPath": {
+																"value": "/2022/04/29/",
+																"type": "Expression"
+															},
+															"wildcardFileName": {
+																"value": "@item().name",
+																"type": "Expression"
+															},
+															"enablePartitionDiscovery": false
+														},
+														"formatSettings": {
+															"type": "DelimitedTextReadSettings"
+														},
+														"recursive": false
+													},
+													"sink": {
+														"type": "AzureSqlSink"
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "distributor_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distributor_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "distributor_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "distributor_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "branch_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "branch_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "branch_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "branch_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_created_date",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_created_date",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "created_user_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "created_user_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "created_user_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "created_user_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "assigned_to",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "assigned_to",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "retailer_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "retailer_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "retailer_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "retailer_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_title",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_title",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_description",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_description",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "due_date",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "due_date",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "over_due",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "over_due",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_remark",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_remark",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "task_status",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "task_status",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_task_date",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_task_date",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_task_id",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_task_id",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_seller_code",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_seller_code",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tas_seller_name",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "tas_seller_name",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "Filename",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "Filename",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "Lastmodifieddatetime",
+																	"type": "String"
+																},
+																"sink": {
+																	"name": "LastModifiedDatetime",
+																	"type": "DateTime"
+																}
+															}
+														]
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "ADLSCSVDataSource_Folder",
+														"type": "DatasetReference",
+														"parameters": {
+															"Container": "leap",
+															"Directory": {
+																"value": "/2022/04/29/",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "TASK_table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Other Pipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-02-17T07:39:00Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ADLSDataset')]",
+				"[concat(variables('factoryId'), '/datasets/ADLSCSVDataSource_Folder')]",
+				"[concat(variables('factoryId'), '/datasets/TASK_table')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MoveADLS-To-Staging')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -58400,16 +59499,39 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/LoadFile-ADLS-To-DB_TASK')]",
+			"name": "[concat(parameters('factoryName'), '/LeapDataMovement_WithoutProcessing_01May2022')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "LoadFile-ADLS-To-DB",
 				"activities": [
 					{
-						"name": "GetFileList",
-						"description": "Get the list of file",
-						"type": "GetMetadata",
+						"name": "SpDailyDataRefreshSalesData Error",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "SpproductHierrachyTransfertoDF",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Send Notification",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"EmailTo": "avinash@astix.in,Alok@astix.in,Ashwani@Astix.in",
+								"Subject": "Datafactory Error",
+								"ErrorMessage": "SpDailyDataRefreshSalesData failed, log on to portal for more details"
+							}
+						}
+					},
+					{
+						"name": "SpproductHierrachyTransfertoDF",
+						"type": "SqlServerStoredProcedure",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
@@ -58420,1065 +59542,391 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataset": {
-								"referenceName": "ADLSDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"folder": {
-										"value": "/2022/04/29/",
-										"type": "Expression"
+							"storedProcedureName": "[[dbo].[spPopulatePopulateProductHierarchyForDF]"
+						},
+						"linkedServiceName": {
+							"referenceName": "TASDatabase",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "tblProductTransfertoDF",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "SpproductHierrachyTransfertoDF",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "TRUNCATE TABLE tmpProductTransferToDF",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CatHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "CatHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										}
 									},
-									"directory": "leap"
+									{
+										"source": {
+											"name": "CatNodeID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "CatNodeID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "CatNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "CatNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Category",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "Category",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "BrnHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "BrnHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "BrnNodeID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "BrnNodeID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "BrnNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "BrnNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Brand",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "Brand",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "BFHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "BFHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "BFNodeID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "BFNodeID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "BFNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "BFNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "BrandForm",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "BrandForm",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "SBFHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "SBFHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "SBFNodeId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "SBFNodeId",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "SBFNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "SBFNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "SBF",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "SBF",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "PrdHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "PrdHierId",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "PrdNodeId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "PrdNodeId",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "PrdNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "PrdNodeType",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "SKUCode",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "SKUCode",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "SKU",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "SKU",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "MRP",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 18
+										},
+										"sink": {
+											"name": "MRP",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "RLP",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 10,
+											"precision": 18
+										},
+										"sink": {
+											"name": "RLP",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 10,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "PcsInBox",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "PcsInBox",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
 								}
-							},
-							"fieldList": [
-								"childItems",
-								"lastModified",
-								"itemName"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true
-							},
-							"formatSettings": {
-								"type": "BinaryReadSettings"
 							}
-						}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_TAS_ProductTransfer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_DF_tmpProductTransferToDF",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					},
 					{
-						"name": "FilterFiles",
-						"description": "Only files will be selected, the source-folders will not be selected.",
-						"type": "Filter",
+						"name": "SpTransferTASToDFProductMaster",
+						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
-								"activity": "GetFileList",
+								"activity": "tblProductTransfertoDF",
 								"dependencyConditions": [
 									"Succeeded"
 								]
 							}
 						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
 						"userProperties": [],
 						"typeProperties": {
-							"items": {
-								"value": "@activity('GetFileList').output.childItems",
-								"type": "Expression"
-							},
-							"condition": {
-								"value": "@equals(item().type, 'File')",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "ForEachFile",
-						"description": "Iterate each file, and move them one by one.",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "FilterFiles",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('FilterFiles').output.value",
-								"type": "Expression"
-							},
-							"batchCount": 20,
-							"activities": [
-								{
-									"name": "TASK_Cloud1",
-									"type": "IfCondition",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@bool(startswith(item().name,'TASK_cloud01_'))",
-											"type": "Expression"
-										},
-										"ifTrueActivities": [
-											{
-												"name": "TASK_Cloud01",
-												"description": "Copy a file from the source store to the destination store.",
-												"type": "Copy",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "7.00:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"source": {
-														"type": "DelimitedTextSource",
-														"additionalColumns": [
-															{
-																"name": "Filename",
-																"value": {
-																	"value": "@item().name",
-																	"type": "Expression"
-																}
-															},
-															{
-																"name": "Lastmodifieddatetime",
-																"value": {
-																	"value": "@activity('GetFileList').output.lastModified",
-																	"type": "Expression"
-																}
-															}
-														],
-														"storeSettings": {
-															"type": "AzureBlobFSReadSettings",
-															"recursive": true,
-															"wildcardFolderPath": {
-																"value": "/2022/04/29/",
-																"type": "Expression"
-															},
-															"wildcardFileName": {
-																"value": "@item().name",
-																"type": "Expression"
-															},
-															"enablePartitionDiscovery": false
-														},
-														"formatSettings": {
-															"type": "DelimitedTextReadSettings"
-														},
-														"recursive": false
-													},
-													"sink": {
-														"type": "AzureSqlSink"
-													},
-													"enableStaging": false,
-													"translator": {
-														"type": "TabularTranslator",
-														"mappings": [
-															{
-																"source": {
-																	"name": "distributor_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "distributor_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "distributor_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "distributor_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "branch_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "branch_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "branch_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "branch_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_created_date",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_created_date",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "created_user_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "created_user_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "created_user_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "created_user_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "assigned_to",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "assigned_to",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "retailer_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "retailer_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "retailer_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "retailer_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_title",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_title",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_description",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_description",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "due_date",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "due_date",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "over_due",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "over_due",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_remark",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_remark",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_status",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_status",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_task_date",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_task_date",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_task_id",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_task_id",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_seller_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_seller_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_seller_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_seller_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "Filename",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "Filename",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "Lastmodifieddatetime",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "LastModifiedDatetime",
-																	"type": "DateTime"
-																}
-															}
-														]
-													}
-												},
-												"inputs": [
-													{
-														"referenceName": "ADLSCSVDataSource_Folder",
-														"type": "DatasetReference",
-														"parameters": {
-															"Container": "leap",
-															"Directory": {
-																"value": "/2022/04/29/",
-																"type": "Expression"
-															}
-														}
-													}
-												],
-												"outputs": [
-													{
-														"referenceName": "TASK_table",
-														"type": "DatasetReference",
-														"parameters": {}
-													}
-												]
-											}
-										]
-									}
-								},
-								{
-									"name": "TASK_Cloud2",
-									"type": "IfCondition",
-									"dependsOn": [
-										{
-											"activity": "TASK_Cloud1",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@bool(startswith(item().name,'TASK_cloud02_'))",
-											"type": "Expression"
-										},
-										"ifTrueActivities": [
-											{
-												"name": "TASK_Cloud02",
-												"description": "Copy a file from the source store to the destination store.",
-												"type": "Copy",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "7.00:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"source": {
-														"type": "DelimitedTextSource",
-														"additionalColumns": [
-															{
-																"name": "Filename",
-																"value": {
-																	"value": "@item().name",
-																	"type": "Expression"
-																}
-															},
-															{
-																"name": "Lastmodifieddatetime",
-																"value": {
-																	"value": "@activity('GetFileList').output.lastModified",
-																	"type": "Expression"
-																}
-															}
-														],
-														"storeSettings": {
-															"type": "AzureBlobFSReadSettings",
-															"recursive": true,
-															"wildcardFolderPath": {
-																"value": "/2022/04/29/",
-																"type": "Expression"
-															},
-															"wildcardFileName": {
-																"value": "@item().name",
-																"type": "Expression"
-															},
-															"enablePartitionDiscovery": false
-														},
-														"formatSettings": {
-															"type": "DelimitedTextReadSettings"
-														},
-														"recursive": false
-													},
-													"sink": {
-														"type": "AzureSqlSink"
-													},
-													"enableStaging": false,
-													"translator": {
-														"type": "TabularTranslator",
-														"mappings": [
-															{
-																"source": {
-																	"name": "distributor_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "distributor_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "distributor_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "distributor_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "branch_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "branch_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "branch_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "branch_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_created_date",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_created_date",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "created_user_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "created_user_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "created_user_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "created_user_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "assigned_to",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "assigned_to",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "retailer_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "retailer_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "retailer_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "retailer_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_title",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_title",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_description",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_description",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "due_date",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "due_date",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "over_due",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "over_due",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_remark",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_remark",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_status",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_status",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_task_date",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_task_date",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_task_id",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_task_id",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_seller_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_seller_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_seller_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_seller_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "Filename",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "Filename",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "Lastmodifieddatetime",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "LastModifiedDatetime",
-																	"type": "DateTime"
-																}
-															}
-														]
-													}
-												},
-												"inputs": [
-													{
-														"referenceName": "ADLSCSVDataSource_Folder",
-														"type": "DatasetReference",
-														"parameters": {
-															"Container": "leap",
-															"Directory": {
-																"value": "/2022/04/29/",
-																"type": "Expression"
-															}
-														}
-													}
-												],
-												"outputs": [
-													{
-														"referenceName": "TASK_table",
-														"type": "DatasetReference",
-														"parameters": {}
-													}
-												]
-											}
-										]
-									}
-								},
-								{
-									"name": "TASK_Cloud3",
-									"type": "IfCondition",
-									"dependsOn": [
-										{
-											"activity": "TASK_Cloud2",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@bool(startswith(item().name,'TASK_cloud03_'))",
-											"type": "Expression"
-										},
-										"ifTrueActivities": [
-											{
-												"name": "TASK_Cloud03",
-												"description": "Copy a file from the source store to the destination store.",
-												"type": "Copy",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "7.00:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"source": {
-														"type": "DelimitedTextSource",
-														"additionalColumns": [
-															{
-																"name": "Filename",
-																"value": {
-																	"value": "@item().name",
-																	"type": "Expression"
-																}
-															},
-															{
-																"name": "Lastmodifieddatetime",
-																"value": {
-																	"value": "@activity('GetFileList').output.lastModified",
-																	"type": "Expression"
-																}
-															}
-														],
-														"storeSettings": {
-															"type": "AzureBlobFSReadSettings",
-															"recursive": true,
-															"wildcardFolderPath": {
-																"value": "/2022/04/29/",
-																"type": "Expression"
-															},
-															"wildcardFileName": {
-																"value": "@item().name",
-																"type": "Expression"
-															},
-															"enablePartitionDiscovery": false
-														},
-														"formatSettings": {
-															"type": "DelimitedTextReadSettings"
-														},
-														"recursive": false
-													},
-													"sink": {
-														"type": "AzureSqlSink"
-													},
-													"enableStaging": false,
-													"translator": {
-														"type": "TabularTranslator",
-														"mappings": [
-															{
-																"source": {
-																	"name": "distributor_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "distributor_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "distributor_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "distributor_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "branch_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "branch_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "branch_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "branch_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_created_date",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_created_date",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "created_user_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "created_user_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "created_user_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "created_user_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "assigned_to",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "assigned_to",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "retailer_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "retailer_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "retailer_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "retailer_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_title",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_title",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_description",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_description",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "due_date",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "due_date",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "over_due",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "over_due",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_remark",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_remark",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "task_status",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "task_status",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_task_date",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_task_date",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_task_id",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_task_id",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_seller_code",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_seller_code",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "tas_seller_name",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "tas_seller_name",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "Filename",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "Filename",
-																	"type": "String"
-																}
-															},
-															{
-																"source": {
-																	"name": "Lastmodifieddatetime",
-																	"type": "String"
-																},
-																"sink": {
-																	"name": "LastModifiedDatetime",
-																	"type": "DateTime"
-																}
-															}
-														]
-													}
-												},
-												"inputs": [
-													{
-														"referenceName": "ADLSCSVDataSource_Folder",
-														"type": "DatasetReference",
-														"parameters": {
-															"Container": "leap",
-															"Directory": {
-																"value": "/2022/04/29/",
-																"type": "Expression"
-															}
-														}
-													}
-												],
-												"outputs": [
-													{
-														"referenceName": "TASK_table",
-														"type": "DatasetReference",
-														"parameters": {}
-													}
-												]
-											}
-										]
-									}
-								}
-							]
+							"storedProcedureName": "[[dbo].[spTransferTASToDFProductMaster]"
+						},
+						"linkedServiceName": {
+							"referenceName": "PnGDataFoundation",
+							"type": "LinkedServiceReference"
 						}
 					}
 				],
@@ -59486,16 +59934,26 @@
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
 				},
+				"parameters": {
+					"windowStart": {
+						"type": "string"
+					},
+					"windowEnd": {
+						"type": "string"
+					}
+				},
 				"folder": {
-					"name": "Other Pipelines"
+					"name": "Leap Data Pipeline"
 				},
 				"annotations": [],
-				"lastPublishTime": "2021-02-17T07:39:00Z"
+				"lastPublishTime": "2021-07-01T05:49:19Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ADLSDataset')]",
-				"[concat(variables('factoryId'), '/datasets/ADLSCSVDataSource_Folder')]",
-				"[concat(variables('factoryId'), '/datasets/TASK_table')]"
+				"[concat(variables('factoryId'), '/pipelines/Send Notification')]",
+				"[concat(variables('factoryId'), '/linkedServices/TASDatabase')]",
+				"[concat(variables('factoryId'), '/datasets/DS_TAS_ProductTransfer')]",
+				"[concat(variables('factoryId'), '/datasets/DS_DF_tmpProductTransferToDF')]",
+				"[concat(variables('factoryId'), '/linkedServices/PnGDataFoundation')]"
 			]
 		}
 	]
