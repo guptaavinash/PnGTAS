@@ -521,12 +521,6 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "spDailyDataRefreshSalesData",
-						"dependencyConditions": [
-							"Failed"
-						]
-					},
-					{
 						"activity": "SpproductHierrachyTransfertoDF",
 						"dependencyConditions": [
 							"Failed"
@@ -672,7 +666,7 @@
 				],
 				"policy": {
 					"timeout": "7.00:00:00",
-					"retry": 0,
+					"retry": 2,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
@@ -1158,6 +1152,31 @@
 						"EmailTo": "avinash@astix.in,ashwani@Astix.in,alok@astix.in",
 						"Subject": "TAS Datafactory Error",
 						"ErrorMessage": "spSmartBasketPopulateBaseDetail Failed, log on to portal for more details"
+					}
+				}
+			},
+			{
+				"name": "SpDailyDataRefreshSalesData Error_copy1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "spDailyDataRefreshSalesData",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Send Notification",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"EmailTo": "avinash@astix.in,Alok@astix.in,Ashwani@Astix.in",
+						"Subject": "Datafactory Error",
+						"ErrorMessage": "SpDailyDataRefreshSalesData failed, log on to portal for more details"
 					}
 				}
 			}
