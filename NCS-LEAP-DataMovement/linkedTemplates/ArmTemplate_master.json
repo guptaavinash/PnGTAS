@@ -43,6 +43,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'TASDatabase_Test'"
 		},
+		"DBSource_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'DBSource'"
+		},
+		"LnkDBDestination_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LnkDBDestination'"
+		},
 		"Leap_AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
 			"defaultValue": "AKIAW6LTDL6KHDJLBDO2"
@@ -132,6 +140,12 @@
 					},
 					"TASDatabase_Test_connectionString": {
 						"value": "[parameters('TASDatabase_Test_connectionString')]"
+					},
+					"DBSource_connectionString": {
+						"value": "[parameters('DBSource_connectionString')]"
+					},
+					"LnkDBDestination_connectionString": {
+						"value": "[parameters('LnkDBDestination_connectionString')]"
 					},
 					"Leap_AmazonS3_properties_typeProperties_accessKeyId": {
 						"value": "[parameters('Leap_AmazonS3_properties_typeProperties_accessKeyId')]"
@@ -299,18 +313,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"CCR_DataProcessingAt10_properties_CCRDataMovement_parameters_windowStart": {
-						"value": "[parameters('CCR_DataProcessingAt10_properties_CCRDataMovement_parameters_windowStart')]"
-					},
-					"CCR_DataProcessingAt10_properties_CCRDataMovement_parameters_windowEnd": {
-						"value": "[parameters('CCR_DataProcessingAt10_properties_CCRDataMovement_parameters_windowEnd')]"
-					},
-					"LeapFileLoading_At5_30_properties_LeapDataMovement_WithoutProcessing_parameters_windowStart": {
-						"value": "[parameters('LeapFileLoading_At5_30_properties_LeapDataMovement_WithoutProcessing_parameters_windowStart')]"
-					},
-					"LeapFileLoading_At5_30_properties_LeapDataMovement_WithoutProcessing_parameters_windowEnd": {
-						"value": "[parameters('LeapFileLoading_At5_30_properties_LeapDataMovement_WithoutProcessing_parameters_windowEnd')]"
 					}
 				}
 			},
@@ -331,6 +333,18 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"CCR_DataProcessingAt10_properties_CCRDataMovement_parameters_windowStart": {
+						"value": "[parameters('CCR_DataProcessingAt10_properties_CCRDataMovement_parameters_windowStart')]"
+					},
+					"CCR_DataProcessingAt10_properties_CCRDataMovement_parameters_windowEnd": {
+						"value": "[parameters('CCR_DataProcessingAt10_properties_CCRDataMovement_parameters_windowEnd')]"
+					},
+					"LeapFileLoading_At5_30_properties_LeapDataMovement_WithoutProcessing_parameters_windowStart": {
+						"value": "[parameters('LeapFileLoading_At5_30_properties_LeapDataMovement_WithoutProcessing_parameters_windowStart')]"
+					},
+					"LeapFileLoading_At5_30_properties_LeapDataMovement_WithoutProcessing_parameters_windowEnd": {
+						"value": "[parameters('LeapFileLoading_At5_30_properties_LeapDataMovement_WithoutProcessing_parameters_windowEnd')]"
 					},
 					"Everyday_properties_LeapDataMovement_parameters_windowStart": {
 						"value": "[parameters('Everyday_properties_LeapDataMovement_parameters_windowStart')]"

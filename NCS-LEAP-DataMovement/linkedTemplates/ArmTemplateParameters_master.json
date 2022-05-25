@@ -32,6 +32,12 @@
 		"TASDatabase_Test_connectionString": {
 			"value": ""
 		},
+		"DBSource_connectionString": {
+			"value": ""
+		},
+		"LnkDBDestination_connectionString": {
+			"value": ""
+		},
 		"Leap_AmazonS3_properties_typeProperties_accessKeyId": {
 			"value": "AKIAW6LTDL6KHDJLBDO2"
 		},
