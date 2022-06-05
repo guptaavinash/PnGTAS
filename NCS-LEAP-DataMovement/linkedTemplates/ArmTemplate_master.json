@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CCRDataStorageLink'"
 		},
+		"DBSource_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'DBSource'"
+		},
 		"Leap_AmazonS3_secretAccessKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'secretAccessKey' of 'Leap_AmazonS3'"
@@ -22,6 +26,10 @@
 		"LinkedService_PnGADLS_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'LinkedService_PnGADLS'"
+		},
+		"LnkDBDestination_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LnkDBDestination'"
 		},
 		"NCSdataStorageLink_connectionString": {
 			"type": "secureString",
@@ -42,14 +50,6 @@
 		"TASDatabase_Test_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'TASDatabase_Test'"
-		},
-		"DBSource_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'DBSource'"
-		},
-		"LnkDBDestination_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LnkDBDestination'"
 		},
 		"Leap_AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
@@ -120,11 +120,17 @@
 					"CCRDataStorageLink_connectionString": {
 						"value": "[parameters('CCRDataStorageLink_connectionString')]"
 					},
+					"DBSource_connectionString": {
+						"value": "[parameters('DBSource_connectionString')]"
+					},
 					"Leap_AmazonS3_secretAccessKey": {
 						"value": "[parameters('Leap_AmazonS3_secretAccessKey')]"
 					},
 					"LinkedService_PnGADLS_accountKey": {
 						"value": "[parameters('LinkedService_PnGADLS_accountKey')]"
+					},
+					"LnkDBDestination_connectionString": {
+						"value": "[parameters('LnkDBDestination_connectionString')]"
 					},
 					"NCSdataStorageLink_connectionString": {
 						"value": "[parameters('NCSdataStorageLink_connectionString')]"
@@ -140,12 +146,6 @@
 					},
 					"TASDatabase_Test_connectionString": {
 						"value": "[parameters('TASDatabase_Test_connectionString')]"
-					},
-					"DBSource_connectionString": {
-						"value": "[parameters('DBSource_connectionString')]"
-					},
-					"LnkDBDestination_connectionString": {
-						"value": "[parameters('LnkDBDestination_connectionString')]"
 					},
 					"Leap_AmazonS3_properties_typeProperties_accessKeyId": {
 						"value": "[parameters('Leap_AmazonS3_properties_typeProperties_accessKeyId')]"
